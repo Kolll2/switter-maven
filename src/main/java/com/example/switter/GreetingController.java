@@ -16,39 +16,53 @@ public class GreetingController {
     @Autowired
     private MessageRepository messageRepository;
 
-    @GetMapping("/greeting")
-    public String greeting(@RequestParam(name = "name", required = false, defaultValue = "World") String name, Map<String, Object> model) {
-        model.put("name", name);
-        return "greeting";
-    }
+    @Controller
+    public class MainController {
+        @Autowired
+        private MessageRepository messageRepository;
 
-    @GetMapping
-    public String main(Map<String, Object> model) {
-        Iterable<Message> messages = messageRepository.findAll();
-        model.put("messages", messages);
-        return "main";
-    }
-
-    @PostMapping
-    @SuppressWarnings(value = "unused")
-    public String add(@RequestParam String text, @RequestParam String tag, Map<String, Object> model) {
-        Message message = new Message(text, tag);
-        messageRepository.save(message);
-        Iterable<Message> messages = messageRepository.findAll();
-        model.put("messages", messages);
-        return "main";
-    }
-
-    @PostMapping("/filter")
-    @SuppressWarnings(value = "unused")
-    public String filter(@RequestParam String filter, Map<String, Object> model) {
-        Iterable<Message> messages;
-        if (filter != null && !filter.isEmpty()) {
-            messages = messageRepository.findByTag(filter);
-        } else {
-            messages = messageRepository.findAll();
+        @GetMapping("/")
+        public String greeting(Map<String, Object> model) {
+            return "greeting";
         }
-        model.put("messages", messages);
-        return "main";
+
+        @GetMapping("/main")
+        public String main(Map<String, Object> model) {
+            Iterable<Message> messages = messageRepository.findAll();
+
+            model.put("messages", messages);
+
+            return "main";
+        }
+
+        @PostMapping("/main")
+        @SuppressWarnings(value = "unused")
+        public String add(@RequestParam String text, @RequestParam String tag, Map<String, Object> model) {
+            Message message = new Message(text, tag);
+
+            messageRepository.save(message);
+
+            Iterable<Message> messages = messageRepository.findAll();
+
+            model.put("messages", messages);
+
+            return "main";
+        }
+
+        @PostMapping("filter")
+        @SuppressWarnings(value = "unused")
+        public String filter(@RequestParam String filter, Map<String, Object> model) {
+            Iterable<Message> messages;
+
+            if (filter != null && !filter.isEmpty()) {
+                messages = messageRepository.findByTag(filter);
+            } else {
+                messages = messageRepository.findAll();
+            }
+
+            model.put("messages", messages);
+
+            return "main";
+        }
     }
 }
