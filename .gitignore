@@ -2,5 +2,9 @@
 .idea
 .idea/*
 target
+target/classes/*
 target/*
+/target/
 switter.iml
+*.class
+
